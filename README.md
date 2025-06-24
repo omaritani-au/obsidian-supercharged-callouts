@@ -52,7 +52,7 @@ Break free from the single-column limit. The plugin supports standard columns, o
 
 ![A screenshot showing a standard multi-column layout.](https://github.com/user-attachments/assets/1127b451-0394-497c-981f-e317d20db86c)
 
-**Custom Callouts as Columns (`Clean Box` Theme):**
+**Custom Callouts as Columns (`Clean Box` Theme):**https://aistudio.google.com/prompts/124w1c2s6ScxjOF7NwzzPr7rPpzEFs2A2
 
 ![A screenshot showing custom callouts as columns in the 'Clean Box' theme.](https://github.com/user-attachments/assets/9d9a7e00-c0cc-4e87-8e7f-466e4ca438df)
 
