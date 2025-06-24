@@ -38,11 +38,11 @@ Instantly change the feel of your entire vault. The selected style applies to al
 
 **`Clean Box` Theme:**
 
-![A screenshot of three custom callouts using the 'Clean Box' theme.](https://github.com/user-attachments/assets/1a39da48-0eb6-4c8b-a769-a26f60c07ea8)
+![A screenshot of three custom callouts using the 'Clean Box' theme.](https://github.com/user-attachments/assets/33074c2b-8185-4feb-b5e4-25fa4ee9547a)
 
 **`Borderless` Theme:**
 
-![A screenshot of the same three callouts using the 'Borderless' theme.](https://github.com/user-attachments/assets/9ff4a64a-66d8-4ede-8636-5d9dabac14f1)
+![A screenshot of the same three callouts using the 'Borderless' theme.](https://github.com/user-attachments/assets/8c350c8c-0cb9-46b3-83ac-7a957814a8b1)
 
 ### 3. Create Versatile Multi-Column Layouts
 
@@ -50,15 +50,15 @@ Break free from the single-column limit. The plugin supports standard columns, o
 
 **Standard Columns:**
 
-![A screenshot showing a standard multi-column layout.](https://github.com/user-attachments/assets/a5497ec3-1503-4cb5-bb13-261d2cdc5162)
+![A screenshot showing a standard multi-column layout.](https://github.com/user-attachments/assets/1127b451-0394-497c-981f-e317d20db86c)
 
 **Custom Callouts as Columns (`Clean Box` Theme):**
 
-![A screenshot showing custom callouts as columns in the 'Clean Box' theme.](https://github.com/user-attachments/assets/75bbe6c8-3da5-4105-bad6-29421d589967)
+![A screenshot showing custom callouts as columns in the 'Clean Box' theme.](https://github.com/user-attachments/assets/9d9a7e00-c0cc-4e87-8e7f-466e4ca438df)
 
 **Custom Callouts as Columns (`Borderless` Theme):**
 
-![A screenshot showing custom callouts as columns in the 'Borderless' theme.](https://github.com/user-attachments/assets/a49c5d42-ca8d-4b75-9bac-e1ebd872e498)
+![A screenshot showing custom callouts as columns in the 'Borderless' theme.](https://github.com/user-attachments/assets/57d57055-4229-4ec2-a0ac-d60a8fe43edc)
 
 ### 4. Build Powerful Dashboards
 
@@ -66,11 +66,11 @@ The real power of Supercharged Callouts is unleashed when you combine all of its
 
 **Dashboard in `Clean Box` Theme:**
 
-![A screenshot of a detailed course dashboard in the 'Clean Box' theme.](https://github.com/user-attachments/assets/e5f7375d-8546-4b89-8743-2fe944f48ffb)
+![A screenshot of a detailed course dashboard in the 'Clean Box' theme.](https://github.com/user-attachments/assets/b2803c81-1d4c-4d86-beb9-ca2a2be8d34c)
 
 **The Same Dashboard in `Borderless` Theme:**
 
-![A screenshot of the same course dashboard in the 'Borderless' theme.](https://github.com/user-attachments/assets/ec1fce2d-f21d-4a2f-8997-5a40e39744cb)
+![A screenshot of the same course dashboard in the 'Borderless' theme.](https://github.com/user-attachments/assets/7518926e-c72a-4d30-900a-8c1797d11224)
 
 ---
 
