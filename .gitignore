@@ -1,0 +1,13 @@
+# Dependencies
+/node_modules
+
+# Build artifacts (these are generated for releases, not stored in source)
+main.js
+styles.css
+manifest.json
+
+# IDE and OS specific files
+.obsidian/
+.vscode/
+.idea/
+.DS_Store
