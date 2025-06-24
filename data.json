@@ -16,7 +16,7 @@
       "color": "#dc5b5b"
     }
   ],
-  "calloutStyle": "clean-inbox",
+  "calloutStyle": "borderless",
   "customColumnColors": [
     {
       "name": "col-cool",

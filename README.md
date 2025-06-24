@@ -4,7 +4,7 @@
 
 A powerful layout and styling engine for Obsidian. Go beyond simple admonitions and structure your notes with multi-column layouts, custom-designed callouts, and vault-wide visual themes.
 
-![Supercharged Callouts Main Showcase GIF](https://github.com/user-attachments/assets/125a3c7d-4dcd-4898-ae4d-7de7f39baf2b)
+![Supercharged Callouts Main Showcase GIF](https://github.com/user-attachments/assets/82012d10-aac3-421a-a4f1-d83586d2812f)
 
 ---
 
@@ -30,40 +30,47 @@ See what's possible with Supercharged Callouts. From simple aesthetic tweaks to 
 
 Stop searching for the perfect callout and start creating it. The settings panel gives you full control to design callouts that match your exact workflow, complete with custom colors and any of the 800+ icons from the Lucide set.
 
-![A screenshot of the plugin's settings page, showing the list of custom callouts and the creator interface.](https://github.com/user-attachments/assets/6a09c8e5-1f13-4803-a416-8e5b25cbc8c0)
+![A screenshot of the plugin's settings page, showing the list of custom callouts and the creator interface.](https://github.com/user-attachments/assets/cb40fc18-bc57-4fdf-ab44-07c30d6ac92b)
 
 ### 2. Apply Beautiful Vault-Wide Themes
 
 Instantly change the feel of your entire vault. The selected style applies to all callouts—standard, custom, and multi-column—for a beautiful, consistent appearance.
 
 **`Clean Box` Theme:**
-![A screenshot of three custom callouts using the 'Clean Box' theme.](https://github.com/user-attachments/assets/e3e3a7f6-4685-4f81-9034-099beb19f84a)
+
+![A screenshot of three custom callouts using the 'Clean Box' theme.](https://github.com/user-attachments/assets/1a39da48-0eb6-4c8b-a769-a26f60c07ea8)
 
 **`Borderless` Theme:**
-![A screenshot of the same three callouts using the 'Borderless' theme.](https://github.com/user-attachments/assets/40b8574f-28d5-403d-8698-9a50e8c7872a)
+
+![A screenshot of the same three callouts using the 'Borderless' theme.](https://github.com/user-attachments/assets/9ff4a64a-66d8-4ede-8636-5d9dabac14f1)
 
 ### 3. Create Versatile Multi-Column Layouts
 
 Break free from the single-column limit. The plugin supports standard columns, or you can elevate your layouts by using your own personally-designed callouts as columns.
 
 **Standard Columns:**
-![A screenshot showing a standard multi-column layout.](https://github.com/user-attachments/assets/891642dd-d52b-4a0b-9fde-9c28e6afc8c2)
+
+![A screenshot showing a standard multi-column layout.](https://github.com/user-attachments/assets/a5497ec3-1503-4cb5-bb13-261d2cdc5162)
 
 **Custom Callouts as Columns (`Clean Box` Theme):**
-![A screenshot showing custom callouts as columns in the 'Clean Box' theme.](https://github.com/user-attachments/assets/107691fb-c368-4f5c-aba4-720d7fba755a)
+
+![A screenshot showing custom callouts as columns in the 'Clean Box' theme.](https://github.com/user-attachments/assets/75bbe6c8-3da5-4105-bad6-29421d589967)
 
 **Custom Callouts as Columns (`Borderless` Theme):**
-![A screenshot showing custom callouts as columns in the 'Borderless' theme.](https://github.com/user-attachments/assets/44c8043e-9084-4c33-bb6f-ede9ff69c039)
+
+![A screenshot showing custom callouts as columns in the 'Borderless' theme.](https://github.com/user-attachments/assets/a49c5d42-ca8d-4b75-9bac-e1ebd872e498)
 
 ### 4. Build Powerful Dashboards
 
 The real power of Supercharged Callouts is unleashed when you combine all of its features. Create project hubs, course dashboards, daily planners, and anything else you can imagine. Notice how the entire dashboard below adapts to the global theme with a single click.
 
 **Dashboard in `Clean Box` Theme:**
-![A screenshot of a detailed course dashboard in the 'Clean Box' theme.](https://github.com/user-attachments/assets/daceda42-5ca8-4248-a710-f7cc43af7ecd)
+
+![A screenshot of a detailed course dashboard in the 'Clean Box' theme.](https://github.com/user-attachments/assets/e5f7375d-8546-4b89-8743-2fe944f48ffb)
 
 **The Same Dashboard in `Borderless` Theme:**
-![A screenshot of the same course dashboard in the 'Borderless' theme.](https://github.com/user-attachments/assets/d87f6be9-dd69-46e0-90d9-bb0d2f688861)
+
+![A screenshot of the same course dashboard in the 'Borderless' theme.](https://github.com/user-attachments/assets/ec1fce2d-f21d-4a2f-8997-5a40e39744cb)
 
 ---
 
