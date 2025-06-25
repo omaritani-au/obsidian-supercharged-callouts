@@ -1,17 +1,17 @@
 // src/settings.ts
 
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
-// FIX: Removed 'ReorderStyle' from the import as it's no longer used.
-import MultiColumnPlugin, { CalloutStyle } from "./main";
-import { CreatorComponent } from "./components/CreatorComponent";
-import { CalloutListComponent } from "./components/CalloutListComponent";
+import SuperchargedCalloutsPlugin, { CalloutStyle } from "./main";
+import { CreatorComponent } from "./components/CalloutCreatorComponent";
+import { CalloutListComponent } from "./components/CalloutComponent";
 import { ImportExportComponent } from "./components/ImportExportComponent";
-import { ColumnColorManagerComponent } from "./components/ColumnColorManagerComponent";
+import { ColumnColorCreatorComponent } from "./components/ColumnColorCreatorComponent";
+import { ColumnColorListComponent } from "./components/ColumnColorComponent";
 
 export class CalloutManagerSettingTab extends PluginSettingTab {
-    plugin: MultiColumnPlugin;
+    plugin: SuperchargedCalloutsPlugin;
 
-    constructor(app: App, plugin: MultiColumnPlugin) {
+    constructor(app: App, plugin: SuperchargedCalloutsPlugin) {
         super(app, plugin);
         this.plugin = plugin;
     }
@@ -20,46 +20,53 @@ export class CalloutManagerSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
         
-        containerEl.createEl("div", { text: "Advanced Callouts Manager", cls: "setting-item-name", attr: { "style": "font-size: 1.5em; margin-bottom: 10px;"} });
-        containerEl.createEl("p", { text: "Create, edit, and manage your custom callout styles.", cls: "setting-item-description" });
-        containerEl.createEl('hr');
-
-        containerEl.createEl('h3', { text: 'Appearance', cls: 'callout-manager-section-header'});
+        // --- APPEARANCE SECTION ---
         new Setting(containerEl)
-            .setName("Global Callout Style")
-            .setDesc("Choose the visual style for all callouts in your vault. This will apply to both standard and multi-column callouts.")
+            .setName("Global callout style")
+            .setDesc("Choose the visual style for all callouts in your vault. This applies to standard, custom, and multi-column callouts.")
             .addDropdown(dropdown => {
                 dropdown
-                    .addOption('default', 'Obsidian Default')
-                    .addOption('clean-inbox', 'Clean Box')
+                    .addOption('default', 'Obsidian default')
+                    .addOption('clean-inbox', 'Clean box')
                     .addOption('borderless', 'Borderless')
                     .setValue(this.plugin.settings.calloutStyle)
                     .onChange(async (value: CalloutStyle) => {
                         this.plugin.settings.calloutStyle = value;
                         await this.plugin.saveSettings();
-                        this.plugin.applyPluginStyles(); 
+                        this.plugin.applyPluginStyles();
                         new Notice(`Callout style set to: ${value}`);
                     });
             });
 
-        // The reordering style setting that was commented out is what caused the error.
-        // It's safe to keep it commented out or remove it entirely.
+        // ADDED: The first spacer div.
+        containerEl.createDiv({ cls: 'sc-settings-spacer' });
 
-        containerEl.createEl('hr');
-        const columnColorContainer = containerEl.createDiv();
-        new ColumnColorManagerComponent(columnColorContainer, this.plugin, this.display.bind(this)).display();
+        // --- Custom Column Colors Section ---
+        const colorCreatorContainer = containerEl.createDiv();
+        const colorListContainer = containerEl.createDiv();
 
-        const creatorContainer = containerEl.createDiv();
-        const creatorComponent = new CreatorComponent(creatorContainer, this.plugin, this.display.bind(this));
+        const colorCreatorComponent = new ColumnColorCreatorComponent(colorCreatorContainer, this.plugin, this.display.bind(this));
+        const colorListComponent = new ColumnColorListComponent(colorListContainer, this.plugin, this.display.bind(this));
+        colorListComponent.setCreatorComponent(colorCreatorComponent);
 
-        const listContainer = containerEl.createDiv();
-        const listComponent = new CalloutListComponent(listContainer, this.plugin, this.display.bind(this));
+        colorCreatorComponent.display();
+        colorListComponent.display();
+
+        // --- CUSTOM CALLOUTS SECTION ---
+        const calloutCreatorContainer = containerEl.createDiv();
+        const calloutListContainer = containerEl.createDiv();
         
-        listComponent.setCreatorComponent(creatorComponent);
+        const calloutCreatorComponent = new CreatorComponent(calloutCreatorContainer, this.plugin, this.display.bind(this));
+        const calloutListComponent = new CalloutListComponent(calloutListContainer, this.plugin, this.display.bind(this));
+        calloutListComponent.setCreatorComponent(calloutCreatorComponent);
 
-        creatorComponent.display();
-        listComponent.display();
+        calloutCreatorComponent.display();
+        calloutListComponent.display();
         
+        // ADDED: The second spacer div.
+        containerEl.createDiv({ cls: 'sc-settings-spacer' });
+
+        // --- IMPORT/EXPORT SECTION ---
         const importExportContainer = containerEl.createDiv();
         new ImportExportComponent(importExportContainer, this.plugin, this.display.bind(this)).display();
     }

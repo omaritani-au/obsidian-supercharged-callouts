@@ -16,21 +16,8 @@
       "color": "#dc5b5b"
     }
   ],
-  "calloutStyle": "borderless",
-  "customColumnColors": [
-    {
-      "name": "col-cool",
-      "color": "#4bf14e"
-    },
-    {
-      "name": "col-summer",
-      "color": "#def14b"
-    },
-    {
-      "name": "col-winter",
-      "color": "#8ca0cf"
-    }
-  ],
+  "calloutStyle": "clean-inbox",
+  "customColumnColors": [],
   "reorderStyle": "both",
   "reorderstyle": "both"
 }

@@ -1,14 +1,14 @@
 // src/components/ImportExportComponent.ts
 
 import { Notice, Setting } from "obsidian";
-import MultiColumnPlugin from "../main";
+import SuperchargedCalloutsPlugin from "../main";
 
 export class ImportExportComponent {
     private container: HTMLElement;
-    private plugin: MultiColumnPlugin;
+    private plugin: SuperchargedCalloutsPlugin;
     private onUpdate: () => void;
 
-    constructor(container: HTMLElement, plugin: MultiColumnPlugin, onUpdate: () => void) {
+    constructor(container: HTMLElement, plugin: SuperchargedCalloutsPlugin, onUpdate: () => void) {
         this.container = container;
         this.plugin = plugin;
         this.onUpdate = onUpdate;
@@ -16,16 +16,16 @@ export class ImportExportComponent {
 
     public display(): void {
         this.container.empty();
-        this.container.createEl('h3', { 
-            text: 'Import / Export',
-            cls: "callout-manager-section-header"
-        });
+        
+        new Setting(this.container)
+            .setHeading()
+            .setName("Import / export");
 
-        const importExportSetting = new Setting(this.container)
-            .setName("Manage Your Callouts")
-            .setDesc("Save your custom callout list to a file or load one from a backup or a friend!");
+        new Setting(this.container)
+            .setDesc("Save your custom callout definitions to a file, or load them from a backup.");
+        
+        const importExportSetting = new Setting(this.container);
 
-        // --- EXPORT Button Logic ---
         importExportSetting.addButton(button => {
             button.setButtonText("Export").onClick(() => {
                 const dataStr = JSON.stringify(this.plugin.settings.customCallouts, null, 2);
@@ -33,17 +33,16 @@ export class ImportExportComponent {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'obsidian-advanced-callouts.json';
+                a.download = 'supercharged-callouts-backup.json';
                 a.click();
                 URL.revokeObjectURL(url);
-                new Notice("Custom callouts exported!");
+                new Notice("Custom callout definitions exported!");
             });
         });
 
-        // --- IMPORT Button Logic ---
         importExportSetting.addButton(button => {
             const input = createEl('input', { type: 'file', attr: { accept: '.json', style: 'display: none;' }});
-            this.container.appendChild(input); // Add the hidden input to the DOM
+            this.container.appendChild(input);
 
             input.onchange = async (e) => {
                 const file = (e.target as HTMLInputElement).files?.[0];
@@ -78,7 +77,7 @@ export class ImportExportComponent {
                     await this.plugin.saveAndApplyStyles();
                     
                     new Notice(`Import complete: ${addedCount} added, ${updatedCount} updated.`);
-                    this.onUpdate(); // Refresh the settings page to show the new list
+                    this.onUpdate();
                 } catch (error) {
                     new Notice("Error reading or parsing file. See console for details.");
                     console.error("Callout import error:", error);

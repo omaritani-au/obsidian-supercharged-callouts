@@ -1,7 +1,5 @@
-// src/modal/StandardTab.ts
-
-import { Setting, setIcon } from "obsidian";
-import { AdvancedCalloutModal, CalloutData } from "./AdvancedCalloutModal";
+import { Setting } from "obsidian";
+import { AdvancedCalloutModal, CalloutData, ComponentType } from "./AdvancedCalloutModal";
 
 export class StandardTab {
     private modal: AdvancedCalloutModal;
@@ -14,74 +12,58 @@ export class StandardTab {
 
     public display(): void {
         this.container.empty();
-        const scrollPosition = this.modal.contentEl.scrollTop;
+        
+        if (!this.modal.parent) {
+            const parentCreator = new Setting(this.container).setName("Create a parent component").setDesc("Start by adding a standard callout or a simple color block.");
+            parentCreator.addButton(btn => btn.setButtonText("+ Add Parent Callout").onClick(() => { this.modal.parent = this.createNewComponent('callout'); this.display(); }));
+            parentCreator.addButton(btn => btn.setButtonText("+ Add Parent Color Block").onClick(() => { this.modal.parent = this.createNewComponent('color-block'); this.display(); }));
+        } else {
+            // --- UX UPGRADE: Dynamic Label ---
+            const parentTitle = `Parent - ${this.modal.parent.componentType === 'callout' ? 'Callout' : 'Color Block'}`;
+            this.modal.createEditorComponent(this.container, parentTitle, this.modal.parent, {
+                onUpdate: () => this.display(),
+                onRemove: () => { this.modal.parent = null; this.modal.nestedCallouts = []; this.display(); }
+            });
+            this.container.createEl('hr');
+        }
 
-        // --- Parent Callout Section ---
-        this.modal.createCalloutEditor(this.container, 'Parent Callout', this.modal.parent, true, {
-            // Re-rendering the entire tab is the most robust way to ensure UI consistency
-            // for the parent callout, as it affects the whole preview.
-            onUpdate: () => {
-                this.display();
-                this.modal.updateLivePreview();
-            }
-        });
-        this.container.createEl('hr');
-
-        // --- Nested Callouts Section ---
-        const nestedHeader = this.container.createDiv({ cls: 'nested-callouts-header' });
-        nestedHeader.createEl('h4', { text: "Nested Callouts" });
-
-        const nestedEditorsContainer = this.container.createDiv();
-
-        // --- RENDER FUNCTION for nested editors ---
-        const renderNestedEditors = () => {
-            const nestedScrollPosition = nestedEditorsContainer.scrollTop;
-            nestedEditorsContainer.empty();
+        if (this.modal.parent) {
+            const nestedHeader = this.container.createDiv({ cls: 'nested-callouts-header' });
+            nestedHeader.createEl('h4', { text: "Nested Components" });
+            const nestedEditorsContainer = this.container.createDiv();
 
             this.modal.nestedCallouts.forEach((calloutData, index) => {
-                this.modal.createCalloutEditor(nestedEditorsContainer, `Nested Callout ${index + 1}`, calloutData, false, {
-                    onUpdate: renderNestedEditors, // This creates the update loop
-                    onRemove: () => {
-                        this.modal.nestedCallouts.splice(index, 1);
-                        renderNestedEditors();
-                    },
-                    onMoveUp: index > 0 ? () => {
-                        const [item] = this.modal.nestedCallouts.splice(index, 1);
-                        this.modal.nestedCallouts.splice(index - 1, 0, item);
-                        renderNestedEditors();
-                    } : undefined,
-                    onMoveDown: index < this.modal.nestedCallouts.length - 1 ? () => {
-                        const [item] = this.modal.nestedCallouts.splice(index, 1);
-                        this.modal.nestedCallouts.splice(index + 1, 0, item);
-                        renderNestedEditors();
-                    } : undefined
+                // --- UX UPGRADE: Dynamic Label ---
+                const nestedTitle = `Nested ${index + 1} - ${calloutData.componentType === 'callout' ? 'Callout' : 'Color Block'}`;
+                this.modal.createEditorComponent(nestedEditorsContainer, nestedTitle, calloutData, {
+                    onUpdate: () => this.display(),
+                    onRemove: () => { this.modal.nestedCallouts.splice(index, 1); this.display(); },
+                    onMoveUp: index > 0 ? () => { const [i] = this.modal.nestedCallouts.splice(index, 1); this.modal.nestedCallouts.splice(index - 1, 0, i); this.display(); } : undefined,
+                    onMoveDown: index < this.modal.nestedCallouts.length - 1 ? () => { const [i] = this.modal.nestedCallouts.splice(index, 1); this.modal.nestedCallouts.splice(index + 1, 0, i); this.display(); } : undefined
                 });
             });
 
-            this.modal.updateLivePreview();
-            nestedEditorsContainer.scrollTop = nestedScrollPosition;
-        };
+            const nestedCreator = new Setting(this.container);
+            nestedCreator.addButton(btn => btn.setButtonText("+ Add Nested Callout").onClick(() => { this.modal.nestedCallouts.push(this.createNewComponent('callout', this.modal.nestedCallouts.length + 1)); this.display(); }));
+            nestedCreator.addButton(btn => btn.setButtonText("+ Add Nested Color Block").onClick(() => { this.modal.nestedCallouts.push(this.createNewComponent('color-block', this.modal.nestedCallouts.length + 1)); this.display(); }));
 
-        // --- "ADD" BUTTON & FINAL INSERT ---
-        new Setting(this.container).addButton(btn => {
-            btn.setButtonText("Add Nested Callout").setCta().onClick(() => {
-                const newNested: CalloutData = {
-                    type: 'success',
-                    title: `Nested Title ${this.modal.nestedCallouts.length + 1}`,
-                    content: 'Nested content.',
-                    collapse: '+',
-                    noTitle: false,
-                    noIcon: false
-                };
-                this.modal.nestedCallouts.push(newNested);
-                renderNestedEditors();
-            });
-        });
+            this.modal.addInsertButtons(this.container);
+        }
+        
+        this.modal.updateLivePreview();
+    }
 
-        this.modal.addInsertButtons(this.container);
-
-        // --- INITIAL RENDER ---
-        renderNestedEditors();
-        this.modal.contentEl.scrollTop = scrollPosition;
+    private createNewComponent(type: ComponentType, index: number = 1): CalloutData {
+        if (type === 'callout') {
+            return {
+                componentType: 'callout', type: 'note', title: `Title ${index}`, content: 'Content.',
+                collapse: '', noTitle: false, noIcon: false, color: '', titleAlign: 'left', contentAlign: 'left',
+            };
+        } else {
+            return {
+                componentType: 'color-block', color: '#ecf0f1', content: 'Content.',
+                type: '', title: '', collapse: '', noTitle: true, noIcon: true, titleAlign: 'left', contentAlign: 'left',
+            };
+        }
     }
 }

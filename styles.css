@@ -1,16 +1,56 @@
 /*
   ============================================================
-  Supercharged Callouts - Stylesheet (Stable Version)
+  Supercharged Callouts - Stylesheet
   ============================================================
 */
 
 /* === MODAL & UI COMPONENTS === */
 .modal.mod-callout-creator { width: 650px; }
 .modal.mod-callout-creator .modal-content { height: 70vh; overflow-y: auto !important; }
-.callout-modal-nav { border-bottom: 2px solid var(--background-modifier-border); padding-bottom: 10px; margin-bottom: 15px; display: flex; }
-.callout-modal-nav button { background-color: transparent; border: none; padding: 8px 16px; margin: 0; font-size: 1em; font-weight: 600; color: var(--text-muted); position: relative; transition: color 0.2s ease-in-out; }
-.callout-modal-nav button.active { color: var(--text-normal); }
-.callout-modal-nav button.active::after { content: ''; position: absolute; bottom: -12px; left: 0; right: 0; height: 2px; background-color: var(--interactive-accent); }
+
+/* === NEW Tab Navigation UI === */
+.callout-modal-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-bottom: 2px solid var(--background-modifier-border);
+    margin-bottom: 15px;
+    position: relative; /* Needed for the ::after pseudo-element */
+}
+.callout-modal-nav button {
+    background-color: transparent;
+    border: none;
+    padding: 10px 16px;
+    margin: 0;
+    font-size: 1.05em;
+    font-weight: 600;
+    color: var(--text-muted);
+    position: relative;
+    transition: color 0.2s ease-in-out;
+}
+.callout-modal-nav button:hover {
+    color: var(--text-normal);
+}
+.callout-modal-nav button.active {
+    color: var(--interactive-accent);
+}
+/* This pseudo-element creates the underline ONLY on the active button */
+.callout-modal-nav button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Sits on top of the container's border */
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--interactive-accent);
+}
+/* FIX: Initial focus glitch. Only show outline on keyboard focus. */
+.callout-modal-nav button:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -2px;
+    border-radius: var(--radius-s);
+}
+
 .callout-modal-content { overflow: visible; padding-right: 10px; }
 .callout-editor-wrapper { border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); margin-bottom: 1em; }
 .callout-editor-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5em 1em; border-bottom: 1px solid var(--background-modifier-border); }
@@ -24,11 +64,15 @@
 .nested-callouts-header { display: flex; justify-content: space-between; align-items: center; }
 .modifier-label { margin: 0 0.5em; color: var(--text-muted); font-size: 0.9em; }
 .icon-preview { margin-right: 10px; }
-.callout-modal-help-icon { position: absolute; top: 10px; right: 40px; cursor: pointer; color: var(--text-muted); }
+/* FIX: Help icon position */
+.callout-modal-help-icon { position: absolute; top: 8px; right: 45px; cursor: pointer; color: var(--text-muted); }
 .callout-modal-help-icon:hover { color: var(--text-normal); }
 
 /* === SETTINGS PAGE COMPONENTS === */
-.callout-manager-section-header { font-size: 1.2em; font-weight: 600; margin-top: 1.5em; margin-bottom: 1em; }
+.sc-settings-spacer {
+    margin-top: 2em;
+}
+
 .custom-callout-list { margin-top: 1em; }
 .custom-callout-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin-bottom: 5px; background-color: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); }
 .custom-callout-item .custom-callout-icon { margin-right: 10px; display: flex; align-items: center; }
@@ -36,6 +80,69 @@
 .custom-callout-item .edit-btn:hover { color: var(--interactive-accent); }
 .custom-callout-item .delete-btn { margin-left: 0; background: none; border: none; cursor: pointer; color: var(--text-faint); }
 .custom-callout-item .delete-btn:hover { color: var(--color-red); }
+
+
+/* === Custom Color Picker Styles === */
+.setting-item-control .sc-color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--background-modifier-border);
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.1s ease-in-out;
+}
+.setting-item-control .sc-color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.sc-color-popover {
+    background-color: var(--background-secondary);
+    border-radius: var(--radius-m);
+    padding: 10px;
+    border: 1px solid var(--background-modifier-border);
+    box-shadow: var(--shadow-l);
+    z-index: 100;
+}
+
+.sc-color-tool-row {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.sc-eyedropper-btn {
+    background-color: transparent;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.sc-eyedropper-btn:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-normal);
+    border-color: var(--interactive-accent);
+}
+
+.sc-color-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.sc-palette-color {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.1s ease-in-out, transform 0.1s ease-in-out;
+}
+.sc-palette-color:hover {
+    border-color: var(--interactive-accent);
+    transform: scale(1.1);
+}
 
 /* === ICON PICKER MODAL === */
 .mod-icon-picker { width: 80vw; max-width: 800px; height: 70vh; }
@@ -68,20 +175,31 @@
     margin: 0 !important;
 }
 
-/* === Style 1: Colored Underline === */
-.mcm-container .callout[data-callout*="col-"] {
+/* === Style 1: Colored Underline & Style 2: Simple Box === */
+.mcm-container .callout[data-callout*="col-"],
+.mcm-container .callout[data-callout="blank-container"] {
     background-color: var(--background-secondary) !important;
     border: 1px solid var(--background-modifier-border) !important;
     border-radius: var(--radius-m) !important;
     padding: 1.2em !important;
 }
-.mcm-container .callout[data-callout*="col-"] > .callout-title {
+.mcm-container .callout[data-callout*="col-"] > .callout-title,
+.mcm-container .callout[data-callout="blank-container"] > .callout-title {
     display: none !important;
 }
-.mcm-container .callout[data-callout*="col-"] h3 {
-    text-align: center; margin-top: 0; margin-bottom: 0.8em; padding-bottom: 0.5em; font-size: 1.1em;
-    text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-normal); border-bottom: 2px solid;
+.mcm-container .callout[data-callout*="col-"] h3,
+.mcm-container .callout[data-callout="blank-container"] h3 {
+    margin-top: 0; margin-bottom: 0.8em; padding-bottom: 0.5em; font-size: 1.1em;
+    color: var(--text-normal); border-bottom: 2px solid;
 }
+.mcm-container .callout[data-callout="blank-container"] h3 {
+    border-bottom-width: 1px;
+    border-bottom-color: var(--background-modifier-border);
+}
+.mcm-container .callout[data-callout*="col-"] h3 {
+    text-transform: uppercase; letter-spacing: 0.05em;
+}
+
 .mcm-container .callout[data-callout="col-red"] h3 { border-bottom-color: var(--color-red); }
 .mcm-container .callout[data-callout="col-blue"] h3 { border-bottom-color: var(--color-blue); }
 .mcm-container .callout[data-callout="col-green"] h3 { border-bottom-color: var(--color-green); }
@@ -94,19 +212,6 @@
 .mcm-container .callout[data-callout="col-lime"] h3 { border-bottom-color: #a3d900; }
 .mcm-container .callout[data-callout="col-gray"] h3 { border-bottom-color: #6c757d; }
 
-/* === Style 2: Simple Box === */
-.mcm-container .callout[data-callout="blank-container"] {
-    background-color: var(--background-secondary) !important;
-    border: 1px solid var(--background-modifier-border) !important;
-    border-radius: var(--radius-m) !important;
-    padding: 1.2em !important;
-}
-.mcm-container .callout[data-callout="blank-container"] > .callout-title {
-    display: none !important;
-}
-.mcm-container .callout[data-callout="blank-container"] h3 {
-    margin-top: 0; padding-bottom: 0.5em; margin-bottom: 0.8em; border-bottom: 1px solid var(--background-modifier-border);
-}
 
 /* === LIVE PREVIEW FIXES & GLOBAL THEMES === */
 .callout-live-preview { margin-top: 20px; padding: 15px; border: 1px dashed var(--background-modifier-border); border-radius: var(--radius-m); background-color: var(--background-secondary); min-height: 100px; }
@@ -116,15 +221,97 @@
 .callout-live-preview .task-list-item { list-style-type: none; margin-left: -1.2em; }
 .callout-live-preview .task-list-item-checkbox { margin-right: 0.5em; }
 
+/* === "Clean Box" Theme === */
 body.callouts-style-clean-inbox .callout { background-color: var(--background); border: 1px solid rgba(var(--callout-color), 0.5); border-radius: var(--radius-m); margin-top: 1.5em; padding: 1em; box-shadow: none; }
 body.callouts-style-clean-inbox .callout > .callout-title { padding-bottom: 0.5em; margin-bottom: 0.8em; border-bottom: 1px solid rgba(var(--callout-color), 0.3); display: flex; align-items: center; }
 body.callouts-style-clean-inbox .callout > .callout-title .callout-title-inner, body.callouts-style-clean-inbox .callout > .callout-title .callout-icon { color: rgb(var(--callout-color)); font-size: 1.1em; font-weight: 700; }
 body.callouts-style-clean-inbox .callout .callout > .callout-title .callout-title-inner { font-weight: 400; font-size: 1.0em; }
 body.callouts-style-clean-inbox .callout > .callout-title .callout-icon { margin-right: 0.5em; }
 body.callouts-style-clean-inbox .callout .callout { margin-top: 0.8em; }
-body.callouts-style-borderless .callout { background-color: var(--background); border-radius: var(--radius-m); box-shadow: none; }
-body.callouts-style-borderless .callout > .callout-title { padding-bottom: 0.5em; margin-bottom: 0.8em; border-bottom: 1px solid rgba(var(--callout-color), 0.3); display: inline-flex; align-items: center; }
+
+/* === "Borderless" Theme with Responsive Underline === */
+body.callouts-style-borderless .callout { background-color: var(--background); border-radius: var(--radius-m); box-shadow: none; padding: 1em; }
+body.callouts-style-borderless .callout > .callout-title {
+    display: flex;
+    align-items: center;
+    border-bottom: 1.5px solid rgba(var(--callout-color), 0.4);
+    padding-bottom: 0.5em;
+    margin-bottom: 0.8em;
+}
+
+/* FIX: Add an invisible character to the title block to preserve its height when empty */
+body.callouts-style-borderless .callout > .callout-title::before {
+    content: '\00a0'; /* Non-breaking space */
+    width: 0; /* Make it take up no horizontal space */
+}
+
 body.callouts-style-borderless .callout > .callout-title .callout-title-inner, body.callouts-style-borderless .callout > .callout-title .callout-icon { color: rgb(var(--callout-color)); font-size: 1.1em; font-weight: 700; }
 body.callouts-style-borderless .callout .callout > .callout-title .callout-title-inner { font-weight: 400; font-size: 1.0em; }
 body.callouts-style-borderless .callout > .callout-title .callout-icon { margin-right: 0.5em; }
-body.callouts-style-borderless .callout .callout { margin-top: 0.5em !important; }
+body.callouts-style-borderless .callout .callout { margin-top: 0.5em !important; padding: 0; } 
+
+/* === Smart Headless Callout Handling === */
+body.callouts-style-clean-inbox .callout.sc-headless > .callout-title {
+    display: none;
+}
+/* For the Borderless theme, the title block remains for the underline */
+body.callouts-style-borderless .callout.sc-headless > .callout-title {
+    border-bottom-width: 1.5px !important;
+}
+
+/* === ALIGNMENT STYLES (FINAL) === */
+/* For standard callouts and borderless callouts */
+body.callouts-style-clean-inbox .callout.sc-title-align-left > .callout-title,
+body.callouts-style-borderless .callout.sc-title-align-left > .callout-title { 
+    justify-content: flex-start; 
+}
+body.callouts-style-clean-inbox .callout.sc-title-align-center > .callout-title,
+body.callouts-style-borderless .callout.sc-title-align-center > .callout-title { 
+    justify-content: center; 
+}
+body.callouts-style-clean-inbox .callout.sc-title-align-right > .callout-title,
+body.callouts-style-borderless .callout.sc-title-align-right > .callout-title { 
+    justify-content: flex-end; 
+}
+
+/* For simple columns (col-*, blank-container) */
+.mcm-container .callout.sc-title-align-left h3 { text-align: left; }
+.mcm-container .callout.sc-title-align-center h3 { text-align: center; }
+.mcm-container .callout.sc-title-align-right h3 { text-align: right; }
+
+/* --- Content Alignment --- */
+/* For standard callouts (note, info, etc.) */
+.callout.sc-content-align-left > .callout-content { text-align: left; }
+.callout.sc-content-align-center > .callout-content { text-align: center; }
+.callout.sc-content-align-right > .callout-content { text-align: right; }
+
+/* FIX: Explicitly align lists within centered/right-aligned content */
+.callout.sc-content-align-center > .callout-content ul,
+.callout.sc-content-align-center > .callout-content ol {
+    display: inline-block;
+    text-align: left;
+}
+.callout.sc-content-align-right > .callout-content ul,
+.callout.sc-content-align-right > .callout-content ol {
+    display: inline-block;
+    text-align: left;
+}
+
+/* Simple Columns Content Alignment */
+.mcm-container .callout[data-callout*="col-"].sc-content-align-left,
+.mcm-container .callout[data-callout="blank-container"].sc-content-align-left {
+    text-align: left;
+}
+.mcm-container .callout[data-callout*="col-"].sc-content-align-center,
+.mcm-container .callout[data-callout="blank-container"].sc-content-align-center {
+    text-align: center;
+}
+.mcm-container .callout[data-callout*="col-"].sc-content-align-right,
+.mcm-container .callout[data-callout="blank-container"].sc-content-align-right {
+    text-align: right;
+}
+
+/* Ensure title alignment in simple columns is independent */
+.mcm-container .callout.sc-title-align-left h3 { text-align: left; }
+.mcm-container .callout.sc-title-align-center h3 { text-align: center; }
+.mcm-container .callout.sc-title-align-right h3 { text-align: right; }
