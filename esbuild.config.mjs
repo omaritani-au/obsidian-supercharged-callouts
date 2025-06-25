@@ -1,8 +1,6 @@
-// esbuild.config.mjs
 import esbuild from "esbuild";
 import process from "process";
-import builtins from "built-in-modules";
-import fs from "fs";
+import builtins from "builtin-modules";
 
 const banner =
 `/*
@@ -14,42 +12,38 @@ if you want to view the source, please visit the github repository of this plugi
 const prod = (process.argv[2] === "production");
 
 const context = await esbuild.context({
-  banner: {
-    js: banner,
-  },
-  entryPoints: ["src/main.ts"],
-  bundle: true,
-  external: [
-    "obsidian",
-    "electron",
-    "@codemirror/view",
-    "@codemirror/state",
-    ...builtins],
-  format: "cjs",
-  target: "es2018",
-  logLevel: "info",
-  sourcemap: prod ? false : "inline",
-  treeShaking: true,
-  outfile: "main.js",
-  plugins: [
-    {
-      name: 'copy-styles',
-      setup(build) {
-        // This hook runs every time the build is finished
-        build.onEnd(async () => {
-          console.log("Build finished, copying styles.css...");
-          // This command copies the stylesheet from src to the root, where Obsidian needs it.
-          await fs.promises.copyFile('src/styles.css', 'styles.css');
-          console.log("styles.css copied successfully.");
-        });
-      },
-    },
-  ],
+	banner: {
+		js: banner,
+	},
+	entryPoints: ["src/main.ts"],
+	bundle: true,
+	external: [
+		"obsidian",
+		"electron",
+		"@codemirror/autocomplete",
+		"@codemirror/collab",
+		"@codemirror/commands",
+		"@codemirror/language",
+		"@codemirror/lint",
+		"@codemirror/search",
+		"@codemirror/state",
+		"@codemirror/view",
+		"@lezer/common",
+		"@lezer/highlight",
+		"@lezer/lr",
+		...builtins],
+	format: "cjs",
+	target: "es2018",
+	logLevel: "info",
+	sourcemap: prod ? false : "inline",
+	treeShaking: true,
+	outfile: "main.js",
+	minify: prod,
 });
 
 if (prod) {
-  await context.rebuild();
-  process.exit(0);
+	await context.rebuild();
+	process.exit(0);
 } else {
-  await context.watch();
+	await context.watch();
 }

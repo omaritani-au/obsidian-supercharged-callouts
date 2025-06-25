@@ -1,0 +1,10 @@
+{
+  "id": "supercharged-callouts",
+  "name": "Supercharged Callouts",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "A powerful layout and styling engine for Obsidian. Create multi-column layouts, custom callouts, and more to structure your notes like never before.",
+  "author": "Omar Itani",
+  "authorUrl": "https://github.com/omaritani-au",
+  "isDesktopOnly": false
+}
