@@ -2,7 +2,7 @@
 
 import SuperchargedCalloutsPlugin from "../main";
 import { AdvancedCalloutModal } from "../modal/AdvancedCalloutModal";
-import { CalloutData, MultiColumnStyle } from "../types";
+import { CalloutData, ColumnData, MultiColumnStyle } from "../types";
 
 export function generateMarkdown(modal: AdvancedCalloutModal): string {
     modal.plugin.clearTemporaryStyles();
@@ -12,41 +12,44 @@ export function generateMarkdown(modal: AdvancedCalloutModal): string {
     const formatComponent = (data: CalloutData, indent: string): string => {
         const content = data.content.trim().replace(/\n/g, `\n${indent} `);
         let alignment = `|c-${data.contentAlign}`;
+        const noUnderline = data.noUnderline ? '|no-ul' : '';
 
         if (data.componentType === 'callout') {
             const modifiers = `${data.noTitle ? '|no-title' : ''}${data.noIcon ? '|no-icon' : ''}`;
             if (data.titleAlign !== 'left') alignment += `|t-${data.titleAlign}`;
             let title = data.title ? ' ' + data.title : '';
-            // If the title is hidden AND it's empty, add a non-breaking space to preserve the title bar for the underline.
-            if (data.noTitle && !title.trim()) {
+            if (data.noTitle && !title.trim() && !data.noUnderline) {
                 title = '  ';
             }
-            return `${indent} [!${data.type}${modifiers}${alignment}]${data.collapse}${title}\n${indent} ${content}`;
+            return `${indent} [!${data.type}${modifiers}${alignment}${noUnderline}]${data.collapse}${title}\n${indent} ${content}`;
         } else {
-            // This is a color-block.
             const tempCalloutName = `sc-temp-${data.color.substring(1)}`;
             modal.plugin.addTemporaryCalloutStyle(tempCalloutName, data.color);
-            // BUG FIX: Generate with a non-breaking space title and only the |no-icon modifier.
-            // This ensures the title bar renders and gets an underline from the theme, just like a headless callout.
-            return `${indent} [!${tempCalloutName}|no-icon${alignment}]  \n${indent} ${content}`;
+            
+            if (data.noUnderline) {
+                return `${indent} [!${tempCalloutName}|no-title|no-icon${alignment}${noUnderline}]\n${indent} ${content}`;
+            } else {
+                return `${indent} [!${tempCalloutName}|no-icon${alignment}]  \n${indent} ${content}`;
+            }
         }
     };
 
     if (modal.activeTab === 'multi-column') {
-        const mainContainer = `> [!multi-column]\n`;
         let formattedCols: string[] = [];
+
         switch (modal.multiColumnStyle) {
             case 'colored-underline':
             case 'simple-box': {
                 if (modal.columns.length === 0) return '> [!multi-column]\n>\n';
-                formattedCols = modal.columns.map(col => {
+                formattedCols = modal.columns.map((col: ColumnData) => {
                     const type = modal.multiColumnStyle === 'simple-box' ? 'blank-container' : col.type;
+                    const noUnderline = col.noUnderline ? '|no-ul' : '';
                     let alignment = `|c-${col.contentAlign}`;
                     if (col.titleAlign !== 'left') alignment += `|t-${col.titleAlign}`;
-                    const titleContent = col.noTitle ? ' ' : col.title;
-                    const titleLine = `>> ### ${titleContent}\n`;
+                    const titleContent = col.noTitle && !col.noUnderline ? ' ' : col.title;
+                    const titleLine = col.noTitle ? (col.noUnderline ? '' : `>> ### ${titleContent}\n`) : `>> ### ${titleContent}\n`;
                     const contentLine = `>> ${col.content.trim().replace(/\n/g, '\n>> ')}`;
-                    return `>> [!${type}${alignment}]\n${titleLine}${contentLine}`;
+                    return `>> [!${type}${alignment}${noUnderline}]\n${titleLine}${contentLine}`;
                 });
                 break;
             }
@@ -56,6 +59,11 @@ export function generateMarkdown(modal: AdvancedCalloutModal): string {
                 break;
             }
         }
+
+        const layout = modal.columnLayout.trim();
+        const widthString = layout ? `|widths=${layout.replace(/\s+/g, '_')}` : '';
+        const mainContainer = `> [!multi-column${widthString}]\n`;
+        
         return mainContainer + formattedCols.join('\n>\n') + '\n';
     } else {
         if (!modal.parent) return '';

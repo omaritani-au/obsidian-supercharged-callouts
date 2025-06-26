@@ -17,6 +17,7 @@ export class AdvancedCalloutModal extends Modal {
     public columns: ColumnData[] = [{ type: 'col-blue', title: 'Column 1', content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false }];
     public multiColumnStyle: MultiColumnStyle = 'component-in-column';
     public nestedCalloutsForColumns: CalloutData[] = [];
+    public columnLayout: string = ''; // NEW: Single property for the entire layout
     private tabContentContainer: HTMLElement;
     private previewContainer: HTMLElement;
     private standardColorCache: Map<string, string> = new Map();

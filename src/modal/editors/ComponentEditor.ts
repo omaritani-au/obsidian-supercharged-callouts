@@ -2,8 +2,9 @@
 
 import { Setting, setIcon } from "obsidian";
 import type { AdvancedCalloutModal } from "../AdvancedCalloutModal";
-import { CalloutData, CustomCalloutDefinition, standardCalloutTypes } from "../../types";
+import { Alignment, CalloutData, CustomCalloutDefinition, standardCalloutTypes } from "../../types";
 import { CustomColorPicker } from "../../ui/CustomColorPicker";
+import { AlignmentControl } from "../../ui/AlignmentControl";
 
 export function createEditorComponent(
     modal: AdvancedCalloutModal,
@@ -70,13 +71,20 @@ function createColorBlockEditor(
         modal.updateLivePreview();
     });
 
-    new Setting(editorContainer).setName("Content alignment").addDropdown(dd => {
-        dd.addOption('left', 'Left').addOption('center', 'Center').addOption('right', 'Right')
-            .setValue(data.contentAlign)
-            .onChange((value: 'left' | 'center' | 'right') => { 
-                data.contentAlign = value; 
-                modal.updateLivePreview(); 
-            });
+    new Setting(editorContainer)
+        .setName("No underline")
+        .setDesc("Only works with the 'Clean Box' theme.")
+        .addToggle(toggle => toggle
+            .setValue(!!data.noUnderline)
+            .onChange(val => {
+                data.noUnderline = val;
+                modal.updateLivePreview();
+            }));
+
+    const contentAlignSetting = new Setting(editorContainer).setName("Content alignment");
+    new AlignmentControl(contentAlignSetting.controlEl, data.contentAlign, (value: Alignment) => {
+        data.contentAlign = value;
+        modal.updateLivePreview();
     });
     
     new Setting(editorContainer).setName("Content").addTextArea(text => { text.setValue(data.content)
@@ -126,13 +134,10 @@ function createFullCalloutEditor(
                 modal.updateLivePreview();
             }));
 
-        new Setting(editorContainer).setName("Title alignment").addDropdown(dd => {
-            dd.addOption('left', 'Left').addOption('center', 'Center').addOption('right', 'Right')
-                .setValue(data.titleAlign)
-                .onChange((value: 'left' | 'center' | 'right') => { 
-                    data.titleAlign = value;
-                    modal.updateLivePreview();
-                });
+        const titleAlignSetting = new Setting(editorContainer).setName("Title alignment");
+        new AlignmentControl(titleAlignSetting.controlEl, data.titleAlign, (value: Alignment) => {
+            data.titleAlign = value;
+            modal.updateLivePreview();
         });
     }
     
@@ -146,21 +151,37 @@ function createFullCalloutEditor(
     };
 
     new Setting(editorContainer)
-        .setName("Modifiers").setDesc("Hide visual elements of the callout.")
-        .addToggle(toggle => {
-            toggle.setTooltip("Hide Icon").setValue(data.noIcon).onChange(val => { data.noIcon = val; handleModifierChange(); });
-        })
-        .addToggle(toggle => {
-            toggle.setTooltip("Hide Title").setValue(data.noTitle).onChange(val => { data.noTitle = val; handleModifierChange(); });
-        });
+        .setName("Hide icon")
+        .addToggle(toggle => toggle
+            .setValue(data.noIcon)
+            .onChange(val => {
+                data.noIcon = val;
+                handleModifierChange();
+            }));
+    
+    new Setting(editorContainer)
+        .setName("Hide title")
+        .addToggle(toggle => toggle
+            .setValue(data.noTitle)
+            .onChange(val => {
+                data.noTitle = val;
+                handleModifierChange();
+            }));
 
-    new Setting(editorContainer).setName("Content alignment").addDropdown(dd => {
-        dd.addOption('left', 'Left').addOption('center', 'Center').addOption('right', 'Right')
-            .setValue(data.contentAlign)
-            .onChange((value: 'left' | 'center' | 'right') => { 
-                data.contentAlign = value;
-                modal.updateLivePreview(); 
-            });
+    new Setting(editorContainer)
+        .setName("No underline")
+        .setDesc("Only works with the 'Clean Box' theme.")
+        .addToggle(toggle => toggle
+            .setValue(!!data.noUnderline)
+            .onChange(val => {
+                data.noUnderline = val;
+                modal.updateLivePreview();
+            }));
+
+    const contentAlignSetting = new Setting(editorContainer).setName("Content alignment");
+    new AlignmentControl(contentAlignSetting.controlEl, data.contentAlign, (value: Alignment) => {
+        data.contentAlign = value;
+        modal.updateLivePreview();
     });
     
     new Setting(editorContainer).setName("Collapse").addDropdown(dd => { dd.addOption('', 'None').addOption('+', 'Open').addOption('-', 'Closed')

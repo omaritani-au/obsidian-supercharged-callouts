@@ -13,6 +13,22 @@ export const SuperchargedCalloutPostProcessor: MarkdownPostProcessor = (element,
             const contentEl = calloutEl.querySelector<HTMLElement>(':scope > .callout-content');
             if (contentEl) {
                 contentEl.addClass('mcm-content-container');
+                
+                // NEW: Apply individual flex properties to children for robust wrapping layouts
+                const metadata = calloutEl.dataset.calloutMetadata;
+                if (metadata) {
+                    const widthMatch = metadata.match(/widths=([^_|\]]+(?:_[^_|\]]+)*)/);
+                    if (widthMatch && widthMatch[1]) {
+                        const widths = widthMatch[1].split('_').map(w => parseFloat(w) || 1);
+                        const columns = contentEl.querySelectorAll<HTMLElement>(':scope > .callout');
+                        
+                        columns.forEach((column, index) => {
+                            const growFactor = widths[index % widths.length];
+                            column.style.flexGrow = `${growFactor}`;
+                            column.style.flexBasis = '0'; // Ensure grow factor is the primary determinant of size
+                        });
+                    }
+                }
             }
         }
 

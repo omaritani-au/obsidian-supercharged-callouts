@@ -22,6 +22,7 @@ export class StandardTab {
             parentCreator.addButton(btn => btn.setButtonText("+ Add Parent Color Block").onClick(() => { this.modal.parent = this.modal.createNewComponent('color-block', 'Title'); this.display(); }));
         } else {
             const parentTitle = `Parent - ${this.modal.parent.componentType === 'callout' ? 'Callout' : 'Color Block'}`;
+            // FIX: Removed the incorrect 5th argument.
             this.modal.createEditorComponent(this.container, parentTitle, this.modal.parent, {
                 onUpdate: () => this.display(),
                 onRemove: () => { this.modal.parent = null; this.modal.nestedCallouts = []; this.display(); }
@@ -36,6 +37,7 @@ export class StandardTab {
 
             this.modal.nestedCallouts.forEach((calloutData: CalloutData, index: number) => {
                 const nestedTitle = `Nested ${index + 1} - ${calloutData.componentType === 'callout' ? 'Callout' : 'Color Block'}`;
+                // FIX: Removed the incorrect 5th argument.
                 this.modal.createEditorComponent(nestedEditorsContainer, nestedTitle, calloutData, {
                     onUpdate: () => this.display(),
                     onRemove: () => { this.modal.nestedCallouts.splice(index, 1); this.display(); },

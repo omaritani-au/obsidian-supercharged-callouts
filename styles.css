@@ -63,6 +63,44 @@
 .callout-modal-help-icon { position: absolute; top: 8px; right: 45px; cursor: pointer; color: var(--text-muted); }
 .callout-modal-help-icon:hover { color: var(--text-normal); }
 
+/* === NEW: Alignment Control Component (Segmented Look) === */
+.sc-align-control {
+    display: flex;
+}
+.sc-align-control button {
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    padding: 6px 12px;
+    margin: 0;
+    color: var(--text-muted);
+    transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    outline: none;
+}
+.sc-align-control button:first-child {
+    border-top-left-radius: var(--radius-s);
+    border-bottom-left-radius: var(--radius-s);
+}
+.sc-align-control button:last-child {
+    border-top-right-radius: var(--radius-s);
+    border-bottom-right-radius: var(--radius-s);
+}
+.sc-align-control button:not(:first-child) {
+    border-left: none;
+}
+.sc-align-control button:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-normal);
+}
+.sc-align-control button.active {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+}
+.sc-align-control button.active:hover {
+    background-color: var(--interactive-accent-hover);
+}
+
+
 /* === SETTINGS PAGE COMPONENTS === */
 .sc-settings-spacer {
     margin-top: 2em;
@@ -95,11 +133,13 @@
 .icon-picker-button { display: flex; justify-content: center; align-items: center; padding: 8px; border-radius: var(--radius-s); cursor: pointer; transition: background-color 0.2s ease; }
 .icon-picker-button:hover { background-color: var(--background-modifier-hover); color: var(--interactive-accent); }
 
-/* === MULTI-COLUMN LAYOUT ENGINE (STABLE VERSION) === */
+/* === MULTI-COLUMN LAYOUT ENGINE (FINAL) === */
 .mcm-container.callout[data-callout="multi-column"] { padding: 0 !important; border: none !important; box-shadow: none !important; background: none !important; margin-top: 1em; margin-bottom: 1em; }
 .mcm-container.callout[data-callout="multi-column"] > .callout-title { display: none !important; }
+/* Revert to single, robust flexbox implementation for all multi-column layouts */
 .mcm-container > .callout-content.mcm-content-container { display: flex; flex-wrap: wrap; gap: 1.25em; width: 100%; }
 .mcm-container > .callout-content.mcm-content-container > .callout { flex: 1; min-width: 200px; margin: 0 !important; }
+
 
 /* === Style 1: Colored Underline & Style 2: Simple Box === */
 .mcm-container .callout[data-callout*="col-"],
@@ -131,7 +171,6 @@
     background-color: var(--background-secondary); 
     min-height: 100px;
     transition: height 0.1s ease-out;
-    /* --- BUG FIX: Set as positioning context for the stage --- */
     position: relative;
 }
 .callout-live-preview > .markdown-preview-view { 
@@ -142,7 +181,6 @@
 /* --- Scaled-Down Mirror Preview --- */
 .sc-preview-stage {
     transform-origin: top left;
-    /* --- BUG FIX: Position absolutely within the padded container --- */
     position: absolute;
     top: 15px;
     left: 15px;
@@ -175,6 +213,18 @@ body.callouts-style-borderless .callout .callout { margin-top: 0.5em !important;
 body.callouts-style-clean-inbox .callout.sc-headless > .callout-title { display: none; }
 body.callouts-style-borderless .callout.sc-headless > .callout-title { border-bottom-width: 1.5px !important; }
 
+/* === Per-Item Disable Underline Override (Clean Box Theme Only) === */
+body.callouts-style-clean-inbox .callout[data-callout-metadata*="no-ul"] > .callout-title {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0.3em !important;
+}
+body.callouts-style-clean-inbox .mcm-container .callout[data-callout-metadata*="no-ul"] h3 {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+}
+
+
 /* === ALIGNMENT STYLES (FINAL) === */
 body.callouts-style-clean-inbox .callout.sc-title-align-left > .callout-title,
 body.callouts-style-borderless .callout.sc-title-align-left > .callout-title { justify-content: flex-start; }
@@ -182,22 +232,26 @@ body.callouts-style-clean-inbox .callout.sc-title-align-center > .callout-title,
 body.callouts-style-borderless .callout.sc-title-align-center > .callout-title { justify-content: center; }
 body.callouts-style-clean-inbox .callout.sc-title-align-right > .callout-title,
 body.callouts-style-borderless .callout.sc-title-align-right > .callout-title { justify-content: flex-end; }
+
 .mcm-container .callout.sc-title-align-left h3 { text-align: left; }
 .mcm-container .callout.sc-title-align-center h3 { text-align: center; }
 .mcm-container .callout.sc-title-align-right h3 { text-align: right; }
 .callout.sc-content-align-left > .callout-content { text-align: left; }
 .callout.sc-content-align-center > .callout-content { text-align: center; }
 .callout.sc-content-align-right > .callout-content { text-align: right; }
+
 .callout.sc-content-align-center > .callout-content ul,
 .callout.sc-content-align-center > .callout-content ol { display: inline-block; text-align: left; }
 .callout.sc-content-align-right > .callout-content ul,
 .callout.sc-content-align-right > .callout-content ol { display: inline-block; text-align: left; }
+
 .mcm-container .callout[data-callout*="col-"].sc-content-align-left,
 .mcm-container .callout[data-callout="blank-container"].sc-content-align-left { text-align: left; }
 .mcm-container .callout[data-callout*="col-"].sc-content-align-center,
 .mcm-container .callout[data-callout="blank-container"].sc-content-align-center { text-align: center; }
 .mcm-container .callout[data-callout*="col-"].sc-content-align-right,
 .mcm-container .callout[data-callout="blank-container"].sc-content-align-right { text-align: right; }
+
 .mcm-container .callout.sc-title-align-left h3 { text-align: left; }
 .mcm-container .callout.sc-title-align-center h3 { text-align: center; }
 .mcm-container .callout.sc-title-align-right h3 { text-align: right; }

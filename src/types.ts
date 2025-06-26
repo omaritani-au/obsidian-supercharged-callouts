@@ -1,5 +1,6 @@
 // src/types.ts
 
+export type Alignment = 'left' | 'center' | 'right';
 export type ComponentType = 'callout' | 'color-block';
 export type MultiColumnStyle = 'colored-underline' | 'simple-box' | 'component-in-column';
 
@@ -12,19 +13,21 @@ export interface CalloutData {
     noIcon: boolean;
     color: string;
     content: string;
-    titleAlign: 'left' | 'center' | 'right';
-    contentAlign: 'left' | 'center' | 'right';
-    width?: string; // For future use with multi-column
+    titleAlign: Alignment;
+    contentAlign: Alignment;
+    width?: string;
+    noUnderline?: boolean;
 }
 
 export interface ColumnData {
     type: string;
     title: string;
     content: string;
-    titleAlign: 'left' | 'center' | 'right';
-    contentAlign: 'left' | 'center' | 'right';
+    titleAlign: Alignment;
+    contentAlign: Alignment;
     noTitle: boolean;
-    width?: string; // For future use with multi-column
+    width?: string;
+    noUnderline?: boolean;
 }
 
 export interface CustomCalloutDefinition {

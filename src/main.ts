@@ -3,7 +3,7 @@
 import { Plugin, Menu, MenuItem, Editor } from 'obsidian';
 import { AdvancedCalloutModal } from './modal/AdvancedCalloutModal';
 import { CalloutManagerSettingTab } from './settings';
-import { SuperchargedCalloutsSettings, CustomCalloutDefinition, ColumnColorDefinition, CalloutStyle } from './types';
+import { SuperchargedCalloutsSettings } from './types';
 import { SuperchargedCalloutPostProcessor } from './rendering/PostProcessor';
 
 export const DEFAULT_SETTINGS: SuperchargedCalloutsSettings = { customCallouts: [], calloutStyle: 'clean-inbox', customColumnColors: [] };
@@ -47,10 +47,13 @@ export default class SuperchargedCalloutsPlugin extends Plugin {
     }
 
     public applyPluginStyles() {
-        document.getElementById(STYLE_ID)?.remove(); // Always remove old styles first
+        document.getElementById(STYLE_ID)?.remove();
+        
+        document.body.classList.remove('callouts-style-clean-inbox', 'callouts-style-borderless');
         if (this.settings.calloutStyle !== 'default') {
             document.body.classList.add(`callouts-style-${this.settings.calloutStyle}`);
         }
+        
         this.injectAllCustomStyles();
     }
     

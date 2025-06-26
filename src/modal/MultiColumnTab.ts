@@ -1,8 +1,9 @@
 // src/modal/MultiColumnTab.ts
 
-import { Setting, setIcon } from "obsidian";
+import { Setting, setIcon, TextComponent } from "obsidian";
 import { AdvancedCalloutModal } from "./AdvancedCalloutModal";
-import { ColumnData, CalloutData, ComponentType, MultiColumnStyle, CustomCalloutDefinition } from "../types";
+import { ColumnData, CalloutData, ComponentType, MultiColumnStyle, CustomCalloutDefinition, Alignment } from "../types";
+import { AlignmentControl } from "../ui/AlignmentControl";
 
 const columnColors: Record<string, string> = { "col-red": "Red", "col-blue": "Blue", "col-green": "Green", "col-yellow": "Yellow", "col-purple": "Purple", "col-orange": "Orange", "col-pink": "Pink", "col-cyan": "Cyan", "col-teal": "Teal", "col-lime": "Lime", "col-gray": "Gray" };
 
@@ -33,6 +34,46 @@ export class MultiColumnTab {
                   this.modal.nestedCalloutsForColumns = [this.modal.createNewComponent('callout', 'Column', 1)];
                   this.display();
               });
+        });
+
+        let layoutInput: TextComponent;
+        new Setting(this.container)
+            .setName("Column Layout")
+            .setDesc("Define column widths (e.g., 1fr 2fr). Leave blank for auto-fit.")
+            .addText(text => {
+                layoutInput = text;
+                text
+                    .setPlaceholder("e.g., 2fr 1fr or 300px 1fr")
+                    .setValue(this.modal.columnLayout)
+                    .onChange(val => {
+                        this.modal.columnLayout = val;
+                        this.modal.updateLivePreview();
+                    });
+            });
+
+        // NEW: Add preset buttons for common layouts
+        const presetSetting = new Setting(this.container)
+            .setName("Layout Presets")
+            .setDesc("Click a preset to apply it.");
+
+        const presets = [
+            { label: '1:1', value: '1fr 1fr' },
+            { label: '1:2', value: '1fr 2fr' },
+            { label: '2:1', value: '2fr 1fr' },
+            { label: '1:1:1', value: '1fr 1fr 1fr' },
+            { label: 'Auto', value: '' },
+        ];
+
+        presets.forEach(preset => {
+            presetSetting.addButton(button => {
+                button
+                    .setButtonText(preset.label)
+                    .onClick(() => {
+                        this.modal.columnLayout = preset.value;
+                        layoutInput.setValue(preset.value); // Update the text field directly
+                        this.modal.updateLivePreview();
+                    });
+            });
         });
 
         this.container.createEl('hr');
@@ -131,18 +172,13 @@ export class MultiColumnTab {
                 this.modal.updateLivePreview(); 
             }));
     
-            new Setting(container)
-                .setName("Title alignment")
-                .addDropdown(dd => {
-                    dd.addOption('left', 'Left').addOption('center', 'Center').addOption('right', 'Right')
-                      .setValue(colData.titleAlign)
-                      .onChange((value: 'left' | 'center' | 'right') => { 
-                          colData.titleAlign = value; 
-                          this.modal.updateLivePreview(); 
-                      });
-                });
+            const titleAlignSetting = new Setting(container).setName("Title alignment");
+            new AlignmentControl(titleAlignSetting.controlEl, colData.titleAlign, (value: Alignment) => {
+                colData.titleAlign = value;
+                this.modal.updateLivePreview();
+            });
         }
-
+        
         new Setting(container)
             .setName("Hide title")
             .addToggle(toggle => toggle
@@ -151,17 +187,22 @@ export class MultiColumnTab {
                     colData.noTitle = val; 
                     onUpdate(); 
                 }));
-
+        
         new Setting(container)
-            .setName("Content alignment")
-            .addDropdown(dd => {
-                dd.addOption('left', 'Left').addOption('center', 'Center').addOption('right', 'Right')
-                  .setValue(colData.contentAlign)
-                  .onChange((value: 'left' | 'center' | 'right') => { 
-                      colData.contentAlign = value; 
-                      this.modal.updateLivePreview(); 
-                  });
-            });
+            .setName("No underline")
+            .setDesc("Only works with the 'Clean Box' theme.")
+            .addToggle(toggle => toggle
+                .setValue(!!colData.noUnderline)
+                .onChange(val => {
+                    colData.noUnderline = val;
+                    this.modal.updateLivePreview();
+                }));
+
+        const contentAlignSetting = new Setting(container).setName("Content alignment");
+        new AlignmentControl(contentAlignSetting.controlEl, colData.contentAlign, (value: Alignment) => {
+            colData.contentAlign = value;
+            this.modal.updateLivePreview();
+        });
 
         new Setting(container).setName("Content").addTextArea(text => text.setValue(colData.content).onChange(val => { 
             colData.content = val; 

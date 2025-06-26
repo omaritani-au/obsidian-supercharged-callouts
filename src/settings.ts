@@ -23,6 +23,10 @@ export class CalloutManagerSettingTab extends PluginSettingTab {
         
         // --- APPEARANCE SECTION ---
         new Setting(containerEl)
+            .setHeading()
+            .setName("Appearance");
+
+        new Setting(containerEl)
             .setName("Global callout style")
             .setDesc("Choose the visual style for all callouts in your vault. This applies to standard, custom, and multi-column callouts.")
             .addDropdown(dropdown => {
@@ -33,13 +37,11 @@ export class CalloutManagerSettingTab extends PluginSettingTab {
                     .setValue(this.plugin.settings.calloutStyle)
                     .onChange(async (value: CalloutStyle) => {
                         this.plugin.settings.calloutStyle = value;
-                        await this.plugin.saveSettings();
-                        this.plugin.applyPluginStyles();
+                        await this.plugin.saveAndApplyStyles();
                         new Notice(`Callout style set to: ${value}`);
                     });
             });
 
-        // ADDED: The first spacer div.
         containerEl.createDiv({ cls: 'sc-settings-spacer' });
 
         // --- Custom Column Colors Section ---
@@ -52,6 +54,8 @@ export class CalloutManagerSettingTab extends PluginSettingTab {
 
         colorCreatorComponent.display();
         colorListComponent.display();
+        
+        containerEl.createDiv({ cls: 'sc-settings-spacer' });
 
         // --- CUSTOM CALLOUTS SECTION ---
         const calloutCreatorContainer = containerEl.createDiv();
@@ -64,7 +68,6 @@ export class CalloutManagerSettingTab extends PluginSettingTab {
         calloutCreatorComponent.display();
         calloutListComponent.display();
         
-        // ADDED: The second spacer div.
         containerEl.createDiv({ cls: 'sc-settings-spacer' });
 
         // --- IMPORT/EXPORT SECTION ---
