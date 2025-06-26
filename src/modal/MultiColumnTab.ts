@@ -1,7 +1,9 @@
-import { Setting, setIcon } from "obsidian";
-import { AdvancedCalloutModal, ColumnData, CalloutData, standardCalloutTypes, ComponentType } from "./AdvancedCalloutModal";
+// src/modal/MultiColumnTab.ts
 
-export type MultiColumnStyle = 'colored-underline' | 'simple-box' | 'component-in-column';
+import { Setting, setIcon } from "obsidian";
+import { AdvancedCalloutModal } from "./AdvancedCalloutModal";
+import { ColumnData, CalloutData, ComponentType, MultiColumnStyle, CustomCalloutDefinition } from "../types";
+
 const columnColors: Record<string, string> = { "col-red": "Red", "col-blue": "Blue", "col-green": "Green", "col-yellow": "Yellow", "col-purple": "Purple", "col-orange": "Orange", "col-pink": "Pink", "col-cyan": "Cyan", "col-teal": "Teal", "col-lime": "Lime", "col-gray": "Gray" };
 
 export class MultiColumnTab {
@@ -28,7 +30,7 @@ export class MultiColumnTab {
                   this.selectedStyle = value;
                   this.modal.multiColumnStyle = value;
                   this.modal.columns = [{ type: 'col-blue', title: 'Column 1', content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false }];
-                  this.modal.nestedCalloutsForColumns = [this.createNewComponent('callout', 1)];
+                  this.modal.nestedCalloutsForColumns = [this.modal.createNewComponent('callout', 'Column', 1)];
                   this.display();
               });
         });
@@ -51,10 +53,9 @@ export class MultiColumnTab {
     }
 
     private renderComponentStyleEditors(container: HTMLElement) {
-        this.modal.nestedCalloutsForColumns.forEach((calloutData, index) => {
+        this.modal.nestedCalloutsForColumns.forEach((calloutData: CalloutData, index: number) => {
             const columnTitle = `Column ${index + 1} - ${calloutData.componentType === 'callout' ? 'Callout' : 'Color Block'}`;
             
-            // --- BUG FIX: All structural change callbacks must call the top-level display() ---
             this.modal.createEditorComponent(container, columnTitle, calloutData, {
                 onUpdate: () => this.display(),
                 onRemove: this.modal.nestedCalloutsForColumns.length > 1 ? () => { 
@@ -76,18 +77,17 @@ export class MultiColumnTab {
         
         const columnCreator = new Setting(container);
         columnCreator.addButton(btn => btn.setButtonText("+ Add Callout Column").onClick(() => {
-            this.modal.nestedCalloutsForColumns.push(this.createNewComponent('callout', this.modal.nestedCalloutsForColumns.length + 1));
+            this.modal.nestedCalloutsForColumns.push(this.modal.createNewComponent('callout', 'Column', this.modal.nestedCalloutsForColumns.length + 1));
             this.display();
         }));
         columnCreator.addButton(btn => btn.setButtonText("+ Add Color Block Column").onClick(() => {
-            this.modal.nestedCalloutsForColumns.push(this.createNewComponent('color-block', this.modal.nestedCalloutsForColumns.length + 1));
+            this.modal.nestedCalloutsForColumns.push(this.modal.createNewComponent('color-block', 'Column', this.modal.nestedCalloutsForColumns.length + 1));
             this.display();
         }));
     }
 
     private renderSimpleStyleEditors(container: HTMLElement) {
-        this.modal.columns.forEach((colData, index) => {
-            // --- BUG FIX: All structural change callbacks must call the top-level display() ---
+        this.modal.columns.forEach((colData: ColumnData, index: number) => {
             const onUpdate = () => this.display();
 
             const editorWrapper = container.createDiv({ cls: 'callout-editor-wrapper' });
@@ -117,7 +117,7 @@ export class MultiColumnTab {
             new Setting(container).setName("Color").addDropdown(dd => {
                 Object.entries(columnColors).forEach(([key, value]) => dd.addOption(key, value));
                 const custom = this.modal.plugin.settings.customColumnColors;
-                if (custom.length > 0) { const group = dd.selectEl.createEl('optgroup', { attr: { label: '---- Custom ----' } }); custom.forEach(c => group.createEl('option', { text: c.name.replace('col-', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), value: c.name })); }
+                if (custom.length > 0) { const group = dd.selectEl.createEl('optgroup', { attr: { label: '---- Custom ----' } }); custom.forEach(c => group.createEl('option', { text: c.name.replace('col-', '').replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()), value: c.name })); }
                 dd.setValue(colData.type).onChange(val => { 
                     colData.type = val; 
                     this.modal.updateLivePreview(); 
@@ -167,19 +167,5 @@ export class MultiColumnTab {
             colData.content = val; 
             this.modal.updateLivePreview(); 
         }).inputEl.rows = 4);
-    }
-
-    private createNewComponent(type: ComponentType, index: number = 1): CalloutData {
-        if (type === 'callout') {
-            return {
-                componentType: 'callout', type: 'note', title: `Column ${index}`, content: 'Content.',
-                collapse: '', noTitle: false, noIcon: false, color: '', titleAlign: 'left', contentAlign: 'left',
-            };
-        } else {
-            return {
-                componentType: 'color-block', color: '#ecf0f1', content: 'Content.',
-                type: '', title: '', collapse: '', noTitle: true, noIcon: true, titleAlign: 'left', contentAlign: 'left',
-            };
-        }
     }
 }

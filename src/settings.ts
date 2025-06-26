@@ -1,12 +1,13 @@
 // src/settings.ts
 
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
-import SuperchargedCalloutsPlugin, { CalloutStyle } from "./main";
+import SuperchargedCalloutsPlugin from "./main";
 import { CreatorComponent } from "./components/CalloutCreatorComponent";
-import { CalloutListComponent } from "./components/CalloutComponent";
+import { CalloutListComponent } from "./components/CalloutListComponent";
 import { ImportExportComponent } from "./components/ImportExportComponent";
 import { ColumnColorCreatorComponent } from "./components/ColumnColorCreatorComponent";
-import { ColumnColorListComponent } from "./components/ColumnColorComponent";
+import { ColumnColorListComponent } from "./components/ColumnColorListComponent";
+import { CalloutStyle } from "./types";
 
 export class CalloutManagerSettingTab extends PluginSettingTab {
     plugin: SuperchargedCalloutsPlugin;
