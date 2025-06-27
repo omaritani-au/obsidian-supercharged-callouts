@@ -1,5 +1,3 @@
-// src/modal/MultiColumnTab.ts
-
 import { Setting, setIcon, TextComponent } from "obsidian";
 import { AdvancedCalloutModal } from "./AdvancedCalloutModal";
 import { ColumnData, CalloutData, ComponentType, MultiColumnStyle, CustomCalloutDefinition, Alignment } from "../types";
@@ -30,7 +28,7 @@ export class MultiColumnTab {
               .onChange((value: MultiColumnStyle) => {
                   this.selectedStyle = value;
                   this.modal.multiColumnStyle = value;
-                  this.modal.columns = [{ type: 'col-blue', title: 'Column 1', content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false }];
+                  this.modal.columns = [{ type: 'col-blue', title: 'Column 1', content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false, isCollapsed: false }];
                   this.modal.nestedCalloutsForColumns = [this.modal.createNewComponent('callout', 'Column', 1)];
                   this.display();
               });
@@ -132,12 +130,55 @@ export class MultiColumnTab {
             const onUpdate = () => this.display();
 
             const editorWrapper = container.createDiv({ cls: 'callout-editor-wrapper' });
+            if (colData.isCollapsed) {
+                editorWrapper.addClass('is-collapsed');
+            }
+
             const editorHeader = editorWrapper.createDiv({ cls: 'callout-editor-header' });
-            editorHeader.createEl('h5', { text: `Column ${index + 1}` });
+            editorHeader.onClickEvent(() => {
+                colData.isCollapsed = !colData.isCollapsed;
+                onUpdate();
+            });
+
+            editorHeader.createEl('span', { text: `Column ${index + 1}`, cls: 'callout-editor-header-title' });
+
             const buttonGroup = editorHeader.createDiv({ cls: 'callout-editor-button-group' });
-            if (index > 0) { const upBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); setIcon(upBtn, 'arrow-up'); upBtn.onClickEvent(() => { const [i] = this.modal.columns.splice(index, 1); this.modal.columns.splice(index - 1, 0, i); onUpdate(); }); }
-            if (index < this.modal.columns.length - 1) { const downBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); setIcon(downBtn, 'arrow-down'); downBtn.onClickEvent(() => { const [i] = this.modal.columns.splice(index, 1); this.modal.columns.splice(index + 1, 0, i); onUpdate(); }); }
-            if (this.modal.columns.length > 1) { const removeBtn = buttonGroup.createEl('button', { cls: 'remove-item-btn' }); setIcon(removeBtn, 'trash-2'); removeBtn.onClickEvent(() => { this.modal.columns.splice(index, 1); onUpdate(); }); }
+            buttonGroup.onClickEvent(e => e.stopPropagation());
+            
+            if (index > 0) { 
+                const upBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); 
+                setIcon(upBtn, 'arrow-up'); 
+                upBtn.onClickEvent(() => { 
+                    const [i] = this.modal.columns.splice(index, 1); 
+                    this.modal.columns.splice(index - 1, 0, i); 
+                    onUpdate(); 
+                }); 
+            }
+            if (index < this.modal.columns.length - 1) { 
+                const downBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); 
+                setIcon(downBtn, 'arrow-down'); 
+                downBtn.onClickEvent(() => { 
+                    const [i] = this.modal.columns.splice(index, 1); 
+                    this.modal.columns.splice(index + 1, 0, i); 
+                    onUpdate(); 
+                }); 
+            }
+            if (this.modal.columns.length > 1) { 
+                const removeBtn = buttonGroup.createEl('button', { cls: 'remove-item-btn' }); 
+                setIcon(removeBtn, 'trash-2'); 
+                removeBtn.onClickEvent(() => { 
+                    this.modal.columns.splice(index, 1); 
+                    onUpdate(); 
+                }); 
+            }
+            
+            const collapseBtn = buttonGroup.createEl('button', { cls: 'collapse-btn' });
+            setIcon(collapseBtn, 'chevron-down');
+            collapseBtn.onClickEvent(() => {
+                colData.isCollapsed = !colData.isCollapsed;
+                onUpdate();
+            });
+            
             const editorContent = editorWrapper.createDiv({ cls: 'callout-editor-content' });
             this.createSimpleColumnEditorUI(editorContent, colData, onUpdate);
         });
@@ -146,7 +187,7 @@ export class MultiColumnTab {
             btn.setButtonText("Add column").setCta().onClick(() => {
                 const colorCycle = ['pink', 'green', 'teal', 'orange', 'purple', 'blue'];
                 const nextColor = `col-${colorCycle[this.modal.columns.length % colorCycle.length]}`;
-                const newColumn: ColumnData = { type: nextColor, title: `Column ${this.modal.columns.length + 1}`, content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false };
+                const newColumn: ColumnData = { type: nextColor, title: `Column ${this.modal.columns.length + 1}`, content: '- Item', titleAlign: 'center', contentAlign: 'left', noTitle: false, isCollapsed: false };
                 this.modal.columns.push(newColumn);
                 this.display();
             });
@@ -158,7 +199,10 @@ export class MultiColumnTab {
             new Setting(container).setName("Color").addDropdown(dd => {
                 Object.entries(columnColors).forEach(([key, value]) => dd.addOption(key, value));
                 const custom = this.modal.plugin.settings.customColumnColors;
-                if (custom.length > 0) { const group = dd.selectEl.createEl('optgroup', { attr: { label: '---- Custom ----' } }); custom.forEach(c => group.createEl('option', { text: c.name.replace('col-', '').replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()), value: c.name })); }
+                if (custom.length > 0) { 
+                    const group = dd.selectEl.createEl('optgroup', { attr: { label: '---- Custom ----' } }); 
+                    custom.forEach(c => group.createEl('option', { text: c.name.replace('col-', '').replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()), value: c.name })); 
+                }
                 dd.setValue(colData.type).onChange(val => { 
                     colData.type = val; 
                     this.modal.updateLivePreview(); 

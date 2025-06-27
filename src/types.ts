@@ -1,5 +1,3 @@
-// src/types.ts
-
 export type Alignment = 'left' | 'center' | 'right';
 export type ComponentType = 'callout' | 'color-block';
 export type MultiColumnStyle = 'colored-underline' | 'simple-box' | 'component-in-column';
@@ -17,6 +15,7 @@ export interface CalloutData {
     contentAlign: Alignment;
     width?: string;
     noUnderline?: boolean;
+    isCollapsed?: boolean; // <-- ADD THIS
 }
 
 export interface ColumnData {
@@ -28,6 +27,7 @@ export interface ColumnData {
     noTitle: boolean;
     width?: string;
     noUnderline?: boolean;
+    isCollapsed?: boolean; // <-- ADD THIS
 }
 
 export interface CustomCalloutDefinition {
@@ -37,7 +37,7 @@ export interface CustomCalloutDefinition {
 }
 
 export interface ColumnColorDefinition {
-    name: string;
+    name:string;
     color: string;
 }
 

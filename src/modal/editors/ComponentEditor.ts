@@ -1,5 +1,3 @@
-// src/modal/editors/ComponentEditor.ts
-
 import { Setting, setIcon } from "obsidian";
 import type { AdvancedCalloutModal } from "../AdvancedCalloutModal";
 import { Alignment, CalloutData, CustomCalloutDefinition, standardCalloutTypes } from "../../types";
@@ -28,11 +26,27 @@ function createEditorHeader(
     callbacks: { onRemove?: () => void, onMoveUp?: () => void, onMoveDown?: () => void, onUpdate: () => void }
 ) {
     const header = container.createDiv({ cls: 'callout-editor-header' });
-    header.createEl('h5', { text: title });
+    header.onClickEvent(() => {
+        data.isCollapsed = !data.isCollapsed;
+        callbacks.onUpdate();
+    });
+
+    header.createEl('span', { text: title, cls: 'callout-editor-header-title' });
     
     const buttonGroup = header.createDiv({ cls: 'callout-editor-button-group' });
-    if (callbacks.onMoveUp) { const upBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); setIcon(upBtn, 'arrow-up'); upBtn.onClickEvent(callbacks.onMoveUp); }
-    if (callbacks.onMoveDown) { const downBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); setIcon(downBtn, 'arrow-down'); downBtn.onClickEvent(callbacks.onMoveDown); }
+    buttonGroup.onClickEvent(e => e.stopPropagation()); // Prevent header click when clicking buttons
+
+    // Action Buttons
+    if (callbacks.onMoveUp) { 
+        const upBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); 
+        setIcon(upBtn, 'arrow-up'); 
+        upBtn.onClickEvent(() => callbacks.onMoveUp?.()); 
+    }
+    if (callbacks.onMoveDown) { 
+        const downBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' }); 
+        setIcon(downBtn, 'arrow-down'); 
+        downBtn.onClickEvent(() => callbacks.onMoveDown?.()); 
+    }
 
     const transformBtn = buttonGroup.createEl('button', { cls: 'reorder-btn' });
     setIcon(transformBtn, 'repeat');
@@ -50,7 +64,19 @@ function createEditorHeader(
         callbacks.onUpdate();
     });
 
-    if (callbacks.onRemove) { const removeBtn = buttonGroup.createEl('button', { cls: 'remove-item-btn' }); setIcon(removeBtn, 'trash-2'); removeBtn.onClickEvent(callbacks.onRemove); }
+    if (callbacks.onRemove) { 
+        const removeBtn = buttonGroup.createEl('button', { cls: 'remove-item-btn' }); 
+        setIcon(removeBtn, 'trash-2'); 
+        removeBtn.onClickEvent(() => callbacks.onRemove?.()); 
+    }
+    
+    // Collapse Indicator Button
+    const collapseBtn = buttonGroup.createEl('button', { cls: 'collapse-btn' });
+    setIcon(collapseBtn, 'chevron-down');
+    collapseBtn.onClickEvent(() => {
+        data.isCollapsed = !data.isCollapsed;
+        callbacks.onUpdate();
+    });
 }
 
 function createColorBlockEditor(
@@ -61,9 +87,13 @@ function createColorBlockEditor(
     callbacks: { onRemove?: () => void, onMoveUp?: () => void, onMoveDown?: () => void, onUpdate: () => void }
 ) {
     const editorWrapper = container.createDiv({ cls: 'callout-editor-wrapper' });
+    if (data.isCollapsed) {
+        editorWrapper.addClass('is-collapsed');
+    }
     createEditorHeader(modal, editorWrapper, title, data, callbacks);
     
     const editorContainer = editorWrapper.createDiv({ cls: 'callout-editor-content' });
+    
     const colorSetting = new Setting(editorContainer).setName("Color").setDesc("Pick a color for the block.");
     const customPicker = new CustomColorPicker(colorSetting.controlEl);
     customPicker.build(data.color, (newColor) => {
@@ -104,6 +134,9 @@ function createFullCalloutEditor(
     callbacks: { onRemove?: () => void, onMoveUp?: () => void, onMoveDown?: () => void, onUpdate: () => void }
 ) {
     const editorWrapper = container.createDiv({ cls: 'callout-editor-wrapper' });
+    if (data.isCollapsed) {
+        editorWrapper.addClass('is-collapsed');
+    }
     createEditorHeader(modal, editorWrapper, title, data, callbacks);
 
     const editorContainer = editorWrapper.createDiv({ cls: 'callout-editor-content' });
